@@ -4,6 +4,8 @@ namespace restaurant_api.Models.ViewModels;
 
 public class OrderViewModel
 {
+    public string? DeliveryLocation { get; set; }
+
     [Range(0, 5)]
     public int Burgers { get; set; }
 

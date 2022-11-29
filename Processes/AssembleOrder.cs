@@ -8,10 +8,12 @@ namespace restaurant_api.Processes;
 public class AssembleOrder : IConsumer<AssembleOrderRequest>
 {
     private readonly RestaurantDbContext _dbContext;
+    private readonly IBusControl _bus;
 
-    public AssembleOrder(RestaurantDbContext dbContext)
+    public AssembleOrder(RestaurantDbContext dbContext, IBusControl bus)
     {
         _dbContext = dbContext;
+        _bus = bus;
     }
 
     public async Task Consume(ConsumeContext<AssembleOrderRequest> context)
@@ -33,5 +35,11 @@ public class AssembleOrder : IConsumer<AssembleOrderRequest>
             entity.SodasReady = true;
 
         await _dbContext.SaveChangesAsync();
+
+        if (entity.isReady)
+        {
+            var deliveryRequest = new DeliverOrderRequest { OrderId = entity.Id };
+            await _bus.Publish(deliveryRequest);
+        }
     }
 }

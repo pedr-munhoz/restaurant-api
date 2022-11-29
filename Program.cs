@@ -21,6 +21,8 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<MakeFries>();
     x.AddConsumer<MakeDrinks>();
     x.AddConsumer<AssembleOrder>();
+    x.AddConsumer<DeliverOrder>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -53,6 +55,11 @@ builder.Services.AddMassTransit(x =>
         {
             e.ConfigureConsumer<AssembleOrder>(context);
         });
+
+        cfg.ReceiveEndpoint("deliver-order-queue", e =>
+        {
+            e.ConfigureConsumer<DeliverOrder>(context);
+        });
     });
 });
 
@@ -60,6 +67,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpClient<DeliverOrder>();
 
 var app = builder.Build();
 

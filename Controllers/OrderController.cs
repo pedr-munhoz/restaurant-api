@@ -27,6 +27,7 @@ public class OrderController : ControllerBase
     {
         var entity = new Order
         {
+            DeliveryLocation = viewModel.DeliveryLocation,
             Burgers = viewModel.Burgers,
             Fries = viewModel.Fries,
             Sodas = viewModel.Sodas,
