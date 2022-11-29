@@ -19,8 +19,6 @@ public class OrderController : ControllerBase
     [HttpPost, Route("")]
     public async Task<IActionResult> MakeOrder([FromBody] OrderViewModel viewModel)
     {
-        await Task.CompletedTask;
-
         var entity = new Order
         {
             Burgers = viewModel.Burgers,
