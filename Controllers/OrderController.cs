@@ -49,7 +49,9 @@ public class OrderController : ControllerBase
     [HttpGet, Route("{id}")]
     public async Task<IActionResult> GetOrder([FromRoute] int id)
     {
-        var entity = await _dbContext.Orders.Where(x => x.Id == id).FirstOrDefaultAsync();
+        var entity = await _dbContext.Orders
+            .Where(x => x.Id == id)
+            .FirstOrDefaultAsync();
 
         if (entity is null)
             return NotFound();

@@ -1,0 +1,37 @@
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using restaurant_api.Infrastructure.Database;
+using restaurant_api.Models.ProcessRequests;
+
+namespace restaurant_api.Processes;
+
+public class AssembleOrder : IConsumer<AssembleOrderRequest>
+{
+    private readonly RestaurantDbContext _dbContext;
+
+    public AssembleOrder(RestaurantDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public async Task Consume(ConsumeContext<AssembleOrderRequest> context)
+    {
+        var entity = await _dbContext.Orders
+            .Where(x => x.Id == context.Message.OrderId)
+            .FirstOrDefaultAsync();
+
+        if (entity is null)
+            return;
+
+        if (context.Message.BurgersReady)
+            entity.BurgersReady = true;
+
+        if (context.Message.FriesReady)
+            entity.FriesReady = true;
+
+        if (context.Message.SodasReady)
+            entity.SodasReady = true;
+
+        await _dbContext.SaveChangesAsync();
+    }
+}

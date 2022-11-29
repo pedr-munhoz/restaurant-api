@@ -17,6 +17,8 @@ builder.Services.AddDbContext<RestaurantDbContext>(options =>
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<MakeOrder>();
+    x.AddConsumer<MakeDrink>();
+    x.AddConsumer<AssembleOrder>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("localhost", "/", h =>
@@ -28,6 +30,16 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint("make-order-queue", e =>
         {
             e.ConfigureConsumer<MakeOrder>(context);
+        });
+
+        cfg.ReceiveEndpoint("make-drink-queue", e =>
+        {
+            e.ConfigureConsumer<MakeDrink>(context);
+        });
+
+        cfg.ReceiveEndpoint("assemble-order-queue", e =>
+        {
+            e.ConfigureConsumer<AssembleOrder>(context);
         });
     });
 });
