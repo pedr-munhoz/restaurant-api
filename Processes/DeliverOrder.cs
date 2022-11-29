@@ -26,14 +26,14 @@ public class DeliverOrder : IConsumer<DeliverOrderRequest>
         if (entity is null)
             return;
 
-        if (entity.DeliveryLocation is not null)
+        if (entity.DeliveryLocation is not null && entity.DeliveryLocation != "")
         {
             var response = await _httpClient.PostAsJsonAsync(entity.DeliveryLocation, entity);
             entity.DeliveryResponse = (int)response.StatusCode;
         }
 
         entity.Delivered = true;
-        entity.Status = OperationStatus.InProgress;
+        entity.Status = OperationStatus.Succeeded;
 
         await _dbContext.SaveChangesAsync();
     }
