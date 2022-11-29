@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using restaurant_api.Infrastructure.Database;
 using restaurant_api.Models.Entities;
 using restaurant_api.Models.ViewModels;
@@ -16,6 +17,7 @@ public class OrderController : ControllerBase
         _dbContext = dbContext;
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpPost, Route("")]
     public async Task<IActionResult> MakeOrder([FromBody] OrderViewModel viewModel)
     {
@@ -33,5 +35,18 @@ public class OrderController : ControllerBase
         await _dbContext.SaveChangesAsync();
 
         return Ok($"Your order will be prepared, order id = {entity.Id}");
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet, Route("{id}")]
+    public async Task<IActionResult> GetOrder([FromRoute] int id)
+    {
+        var entity = await _dbContext.Orders.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+        if (entity is null)
+            return NotFound();
+
+        return Ok(entity);
     }
 }
