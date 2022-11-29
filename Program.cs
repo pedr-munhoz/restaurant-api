@@ -18,6 +18,7 @@ builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<MakeOrder>();
     x.AddConsumer<MakeBurgers>();
+    x.AddConsumer<MakeFries>();
     x.AddConsumer<MakeDrinks>();
     x.AddConsumer<AssembleOrder>();
     x.UsingRabbitMq((context, cfg) =>
@@ -36,6 +37,11 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint("make-burgers-queue", e =>
         {
             e.ConfigureConsumer<MakeBurgers>(context);
+        });
+
+        cfg.ReceiveEndpoint("make-fries-queue", e =>
+        {
+            e.ConfigureConsumer<MakeFries>(context);
         });
 
         cfg.ReceiveEndpoint("make-drinks-queue", e =>

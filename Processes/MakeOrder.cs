@@ -31,10 +31,18 @@ public class MakeOrder : IConsumer<MakeOrderRequest>
         var burgersRequest = new MakeBurgersRequest
         {
             OrderId = entity.Id,
-            Burgers = entity.Sodas,
+            Burgers = entity.Burgers,
         };
 
         await _bus.Publish(burgersRequest);
+
+        var friesRequest = new MakeFriesRequest
+        {
+            OrderId = entity.Id,
+            Fries = entity.Fries,
+        };
+
+        await _bus.Publish(friesRequest);
 
         var drinkRequest = new MakeDrinksRequest
         {
