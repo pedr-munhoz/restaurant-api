@@ -28,28 +28,25 @@ public class MakeOrder : IConsumer<MakeOrderRequest>
         entity.KitchenAck = true;
         await _dbContext.SaveChangesAsync();
 
-        var burgersRequest = new MakeBurgersRequest
-        {
-            OrderId = entity.Id,
-            Burgers = entity.Burgers,
-        };
+        await _bus.Publish(
+            new MakeBurgersRequest
+            {
+                OrderId = entity.Id,
+                Burgers = entity.Burgers,
+            });
 
-        await _bus.Publish(burgersRequest);
+        await _bus.Publish(
+            new MakeFriesRequest
+            {
+                OrderId = entity.Id,
+                Fries = entity.Fries,
+            });
 
-        var friesRequest = new MakeFriesRequest
-        {
-            OrderId = entity.Id,
-            Fries = entity.Fries,
-        };
-
-        await _bus.Publish(friesRequest);
-
-        var drinkRequest = new MakeDrinksRequest
-        {
-            OrderId = entity.Id,
-            Drinks = entity.Sodas,
-        };
-
-        await _bus.Publish(drinkRequest);
+        await _bus.Publish(
+            new MakeDrinksRequest
+            {
+                OrderId = entity.Id,
+                Drinks = entity.Sodas,
+            });
     }
 }

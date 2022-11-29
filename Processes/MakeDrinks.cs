@@ -14,12 +14,11 @@ public class MakeDrinks : IConsumer<MakeDrinksRequest>
 
     public async Task Consume(ConsumeContext<MakeDrinksRequest> context)
     {
-        var assembleRequest = new AssembleOrderRequest
-        {
-            OrderId = context.Message.OrderId,
-            SodasReady = true,
-        };
-
-        await _bus.Publish(assembleRequest);
+        await _bus.Publish(
+            new AssembleOrderRequest
+            {
+                OrderId = context.Message.OrderId,
+                SodasReady = true,
+            });
     }
 }
