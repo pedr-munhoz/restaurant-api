@@ -1,6 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using restaurant_api.Infrastructure.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var connectionString = builder.Configuration["RestaurantDbConnectionString"];
+
+builder.Services.AddDbContext<RestaurantDbContext>(options =>
+    options.UseNpgsql(connectionString)
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
