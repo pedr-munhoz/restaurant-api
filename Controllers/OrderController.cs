@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using restaurant_api.Models.Entities;
 using restaurant_api.Models.ViewModels;
 
 namespace restaurant_api.Controllers;
@@ -8,9 +9,20 @@ namespace restaurant_api.Controllers;
 public class OrderController : ControllerBase
 {
     [HttpPost, Route("")]
-    public async Task<IActionResult> MakeOrder([FromBody] OrderViewModel order)
+    public async Task<IActionResult> MakeOrder([FromBody] OrderViewModel viewModel)
     {
         await Task.CompletedTask;
-        return Ok("Your order will be prepared");
+
+        var entity = new Order
+        {
+            Burgers = viewModel.Burgers,
+            Fries = viewModel.Fries,
+            Sodas = viewModel.Sodas,
+            BurgersReady = viewModel.Burgers <= 0,
+            FriesReady = viewModel.Fries <= 0,
+            SodasReady = viewModel.Sodas <= 0,
+        };
+
+        return Ok($"Your order will be prepared, order id = {entity.Id}");
     }
 }
