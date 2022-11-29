@@ -28,7 +28,7 @@ public class MakeOrder : IConsumer<MakeOrderRequest>
         entity.KitchenAck = true;
         await _dbContext.SaveChangesAsync();
 
-        var drinkRequest = new MakeDrinkRequest
+        var drinkRequest = new MakeDrinksRequest
         {
             OrderId = entity.Id,
             Drinks = entity.Sodas,

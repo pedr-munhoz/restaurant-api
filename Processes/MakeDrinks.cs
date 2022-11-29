@@ -3,16 +3,16 @@ using restaurant_api.Models.ProcessRequests;
 
 namespace restaurant_api.Processes;
 
-public class MakeDrink : IConsumer<MakeDrinkRequest>
+public class MakeDrinks : IConsumer<MakeDrinksRequest>
 {
     private readonly IBusControl _bus;
 
-    public MakeDrink(IBusControl bus)
+    public MakeDrinks(IBusControl bus)
     {
         _bus = bus;
     }
 
-    public async Task Consume(ConsumeContext<MakeDrinkRequest> context)
+    public async Task Consume(ConsumeContext<MakeDrinksRequest> context)
     {
         var assembleRequest = new AssembleOrderRequest
         {
