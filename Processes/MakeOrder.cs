@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using restaurant_api.Infrastructure.Database;
+using restaurant_api.Models.Enums;
 using restaurant_api.Models.ProcessRequests;
 
 namespace restaurant_api.Processes;
@@ -26,6 +27,8 @@ public class MakeOrder : IConsumer<MakeOrderRequest>
             return;
 
         entity.KitchenAck = true;
+        entity.Status = OperationStatus.InProgress;
+
         await _dbContext.SaveChangesAsync();
 
         await _bus.Publish(

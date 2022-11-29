@@ -1,3 +1,5 @@
+using restaurant_api.Models.Enums;
+
 namespace restaurant_api.Models.Entities;
 
 public class Order
@@ -14,4 +16,5 @@ public class Order
     public bool isReady => BurgersReady && FriesReady && SodasReady;
     public bool Delivered { get; set; }
     public int DeliveryResponse { get; set; }
+    public OperationStatus Status { get; set; } = OperationStatus.NotStarted;
 }

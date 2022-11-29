@@ -42,7 +42,7 @@ public class OrderController : ControllerBase
         var makeOrderRequest = new MakeOrderRequest { OrderId = entity.Id };
         await _bus.Publish(makeOrderRequest);
 
-        return Ok($"Your order will be prepared, order id = {entity.Id}");
+        return Accepted($"Your order will be prepared, order id = {entity.Id}");
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
