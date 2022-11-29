@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using restaurant_api.Infrastructure.Database;
 using restaurant_api.Services;
@@ -11,6 +12,18 @@ var connectionString = builder.Configuration["RestaurantDbConnectionString"];
 builder.Services.AddDbContext<RestaurantDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
+
+builder.Services.AddMassTransit(cfg =>
+{
+    cfg.UsingRabbitMq((context, config) =>
+    {
+        config.Host("localhost", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
