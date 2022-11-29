@@ -34,6 +34,8 @@ public class OrderController : ControllerBase
         await _dbContext.Orders.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
 
+        // TODO: post on queue
+
         return Ok($"Your order will be prepared, order id = {entity.Id}");
     }
 

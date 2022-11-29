@@ -1,6 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using restaurant_api.Infrastructure.Database;
+using restaurant_api.Processes;
 using restaurant_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,14 +14,20 @@ builder.Services.AddDbContext<RestaurantDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
 
-builder.Services.AddMassTransit(cfg =>
+builder.Services.AddMassTransit(x =>
 {
-    cfg.UsingRabbitMq((context, config) =>
+    x.AddConsumer<MakeOrder>();
+    x.UsingRabbitMq((context, cfg) =>
     {
-        config.Host("localhost", "/", h =>
+        cfg.Host("localhost", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
+        });
+
+        cfg.ReceiveEndpoint("make-order-queue", e =>
+        {
+            e.ConfigureConsumer<MakeOrder>(context);
         });
     });
 });
