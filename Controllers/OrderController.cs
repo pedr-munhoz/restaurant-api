@@ -1,7 +1,9 @@
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using restaurant_api.Infrastructure.Database;
 using restaurant_api.Models.Entities;
+using restaurant_api.Models.ProcessRequests;
 using restaurant_api.Models.ViewModels;
 
 namespace restaurant_api.Controllers;
@@ -11,10 +13,12 @@ namespace restaurant_api.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly RestaurantDbContext _dbContext;
+    private readonly IBusControl _bus;
 
-    public OrderController(RestaurantDbContext dbContext)
+    public OrderController(RestaurantDbContext dbContext, IBusControl bus)
     {
         _dbContext = dbContext;
+        _bus = bus;
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,7 +38,8 @@ public class OrderController : ControllerBase
         await _dbContext.Orders.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
 
-        // TODO: post on queue
+        var makeOrderRequest = new MakeOrderRequest { OrderId = entity.Id };
+        await _bus.Publish(makeOrderRequest);
 
         return Ok($"Your order will be prepared, order id = {entity.Id}");
     }
