@@ -41,7 +41,6 @@ public class DeliverOrder : IConsumer<DeliverOrderRequest>
 
         if (!result || uriResult is null)
         {
-            entity.Delivered = true;
             entity.Status = OperationStatus.Failed;
 
             await _dbContext.SaveChangesAsync();
@@ -51,7 +50,7 @@ public class DeliverOrder : IConsumer<DeliverOrderRequest>
         var response = await _httpClient.PostAsJsonAsync(uriResult, entity);
         entity.DeliveryResponse = (int)response.StatusCode;
 
-        entity.Delivered = true;
+        entity.Delivered = response.IsSuccessStatusCode;
         entity.Status = response.IsSuccessStatusCode
             ? OperationStatus.Succeeded
             : OperationStatus.Failed;
