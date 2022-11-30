@@ -26,14 +26,35 @@ public class DeliverOrder : IConsumer<DeliverOrderRequest>
         if (entity is null || entity.Delivered)
             return;
 
-        if (entity.DeliveryLocation is not null && entity.DeliveryLocation != "")
+        if (entity.DeliveryLocation is null || entity.DeliveryLocation == "")
         {
-            var response = await _httpClient.PostAsJsonAsync(entity.DeliveryLocation, entity);
-            entity.DeliveryResponse = (int)response.StatusCode;
+            entity.Delivered = true;
+            entity.Status = OperationStatus.Succeeded;
+
+            await _dbContext.SaveChangesAsync();
+            return;
         }
 
+        Uri? uriResult;
+        bool result = Uri.TryCreate(entity.DeliveryLocation, UriKind.Absolute, out uriResult)
+            && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+        if (!result || uriResult is null)
+        {
+            entity.Delivered = true;
+            entity.Status = OperationStatus.Failed;
+
+            await _dbContext.SaveChangesAsync();
+            return;
+        }
+
+        var response = await _httpClient.PostAsJsonAsync(uriResult, entity);
+        entity.DeliveryResponse = (int)response.StatusCode;
+
         entity.Delivered = true;
-        entity.Status = OperationStatus.Succeeded;
+        entity.Status = response.IsSuccessStatusCode
+            ? OperationStatus.Succeeded
+            : OperationStatus.Failed;
 
         await _dbContext.SaveChangesAsync();
     }
