@@ -25,7 +25,8 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", h =>
+        var hostName = builder.Configuration["RabbitmqHostName"];
+        cfg.Host(hostName, "/", h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -80,11 +81,9 @@ var app = builder.Build();
 DatabaseManagementService.MigrationInitialisation(app);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 
