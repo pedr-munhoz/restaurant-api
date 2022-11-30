@@ -14,6 +14,7 @@ public class Order
     public bool FriesReady { get; set; }
     public bool SodasReady { get; set; }
     public bool isReady => BurgersReady && FriesReady && SodasReady;
+    public bool DeliveryRequested { get; set; }
     public bool Delivered { get; set; }
     public int DeliveryResponse { get; set; }
     public OperationStatus Status { get; set; } = OperationStatus.NotStarted;

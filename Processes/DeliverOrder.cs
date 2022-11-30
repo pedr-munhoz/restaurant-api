@@ -23,7 +23,7 @@ public class DeliverOrder : IConsumer<DeliverOrderRequest>
             .Where(x => x.Id == context.Message.OrderId)
             .FirstOrDefaultAsync();
 
-        if (entity is null)
+        if (entity is null || entity.Delivered)
             return;
 
         if (entity.DeliveryLocation is not null && entity.DeliveryLocation != "")

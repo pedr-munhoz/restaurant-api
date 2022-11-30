@@ -36,8 +36,13 @@ public class AssembleOrder : IConsumer<AssembleOrderRequest>
 
         await _dbContext.SaveChangesAsync();
 
-        if (entity.isReady)
+        _dbContext.Entry(entity).Reload();
+
+        if (entity.isReady && !entity.DeliveryRequested)
         {
+            entity.DeliveryRequested = true;
+            await _dbContext.SaveChangesAsync();
+
             var deliveryRequest = new DeliverOrderRequest { OrderId = entity.Id };
             await _bus.Publish(deliveryRequest);
         }
