@@ -11,6 +11,8 @@ services:
       - "5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - mynet
 
   rabbitmq:
     # login guest:guest
@@ -25,6 +27,8 @@ services:
       - "25672:25672"
       - "15671:15671"
       - "15672:15672"
+    networks:
+      - mynet
 
   web-api:
     build: .
@@ -33,12 +37,15 @@ services:
       RabbitmqHostName: "rabbitmq"
     ports:
       - "8090:80"
-    links:
-      - postgresserver
-      - rabbitmq
+    networks:
+      - mynet
     depends_on:
       - "postgresserver"
       - "rabbitmq"
+
+networks:
+  mynet:
+    driver: bridge
 
 volumes:
   pgdata:
