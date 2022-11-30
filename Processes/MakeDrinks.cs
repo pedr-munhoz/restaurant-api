@@ -14,6 +14,7 @@ public class MakeDrinks : IConsumer<MakeDrinksRequest>
 
     public async Task Consume(ConsumeContext<MakeDrinksRequest> context)
     {
+        await Task.Delay(3000 * context.Message.Drinks);
         await _bus.Publish(
             new AssembleOrderRequest
             {

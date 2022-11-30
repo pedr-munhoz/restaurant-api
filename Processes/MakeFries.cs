@@ -14,6 +14,7 @@ public class MakeFries : IConsumer<MakeFriesRequest>
 
     public async Task Consume(ConsumeContext<MakeFriesRequest> context)
     {
+        await Task.Delay(5000 * context.Message.Fries);
         await _bus.Publish(
             new AssembleOrderRequest
             {
